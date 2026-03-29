@@ -12,7 +12,7 @@ from api import Course, CourseFilters, fetch_courses
 
 DATA_FILE = "bot_state.json"
 
-POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "7200"))
+POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "2700"))
 
 DEFAULT_FILTERS: CourseFilters = {
     "uni_countries": None,
@@ -86,8 +86,6 @@ def update_chat_filter(chat_id: int, filter_key: str, filter_value: Optional[str
     chatConfig = get_or_create_chat(chat_id)
     with LOCK:
         chatConfig["filters"][filter_key] = filter_value
-        chatConfig["seen_ids"] = []
-        chatConfig["initialized"] = False
         save_state(STATE)
         return chatConfig
 

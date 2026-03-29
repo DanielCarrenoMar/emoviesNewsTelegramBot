@@ -7,8 +7,6 @@ def register(bot):
         chat_state = get_or_create_chat(message.chat.id)
         with LOCK:
             chat_state["filters"] = DEFAULT_FILTERS.copy()
-            chat_state["seen_ids"] = []
-            chat_state["initialized"] = False
             save_state(STATE)
 
         bot.reply_to(message, "✅ Filtros restaurados por defecto y seguimiento reiniciado.")
