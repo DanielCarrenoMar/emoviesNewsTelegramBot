@@ -49,14 +49,19 @@ def filtersNoneToNaN(filters: CourseFilters) -> CourseFilters:
 
 def fetch_courses(filters: CourseFilters) -> List[Course]:
     def _fetch_page(page: int) -> CoursesPayload:
-        params = {"action": "get_courses", **filtersNoneToNaN(filters), "page": str(page)}
+        validFilters = filtersNoneToNaN(filters)
+        validFilters["uni_search"] = "" if filters.get("uni_search") is None else filters["uni_search"]
+        params = {"action": "get_courses", **validFilters, "page": str(page)}
+        url = API_URL + "?" + "&".join(f"{k}={v}" for k, v in params.items())
+        print(f"Fetching courses with URL: {url}")
         response = requests.get(API_URL, params=params, timeout=REQUEST_TIMEOUT_SECONDS)
         response.raise_for_status()
 
         payload = response.json()
         if not payload.get("success"):
             raise ValueError("La API respondió success=false")
-        courses_payload = payload.get("data", {}).get("courses", {})
+        courses_payload : CoursesPayload = payload.get("data", {}).get("courses", {})
+        print(f"Fetched page {page} with {len(courses_payload.get('posts', []))} courses")
         if not isinstance(courses_payload, dict):
             raise ValueError("La API devolvió un formato inesperado para courses")
         return courses_payload
