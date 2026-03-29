@@ -9,6 +9,7 @@ def register(bot):
                 "/filters - ver y editar filtros actuales\n"
                 "/resetfilters - restaurar filtros por defecto\n"
                 "/check - revisar ahora si hay cursos nuevos\n"
+                "/courseList - obtener lista de cursos que cumplen los filtros actuales\n"
                 "/on - activar monitoreo automático\n"
                 "/off - pausar monitoreo automático"
             ),
