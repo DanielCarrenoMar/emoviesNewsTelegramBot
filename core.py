@@ -3,8 +3,8 @@ import logging
 import os
 import threading
 import time
-from typing import Any, Dict, List, Optional, TypedDict
-from urllib.parse import parse_qs, urlparse
+from typing import Dict, List, Optional, TypedDict
+from datetime import datetime
 
 from telebot import TeleBot
 from api import Course, CourseFilters, fetch_courses
@@ -35,7 +35,7 @@ class ConfigChat(TypedDict, total=False):
 def _default_chatConfig() -> ConfigChat:
     return {
         "filters": DEFAULT_FILTERS.copy(),
-        "last_revision": None,
+        "last_revision": datetime.now().isoformat(),
         "isSubcribed": False,
     }
 
@@ -114,25 +114,26 @@ def formatCourseFilters(filters: CourseFilters) -> str:
         f"• <b>Palabra clave:</b> {formatCourseFilter('uni_search')}"
     )
 
-def check_for_new_courses(bot, chat_id: int, notify: bool = True, bootstrap_message: bool = False) -> int:
+def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: bool = False) -> int:
     chatConfig = get_or_create_chat(chat_id)
+    last_revision = chatConfig["last_revision"]
     filters = chatConfig["filters"].copy()
+
+    if showMessage:
+        bot.send_message(
+            chat_id,
+            f"Revisando novedades... Posteriores a {last_revision or 'sin fecha'}",
+        )
+
     courses = fetch_courses(filters)
 
     with LOCK:
-        last_revision = chatConfig.get("last_revision")
-        print(f"Last revision stored: {last_revision}")
         newest_revision = courses[0].get("post_date") if courses else None
 
         if not last_revision:
             chatConfig["last_revision"] = newest_revision
             save_state(STATE)
 
-            if bootstrap_message:
-                bot.send_message(
-                    chat_id,
-                    f"✅ Seguimiento inicializado. Última revisión guardada: {newest_revision or 'sin fecha'}",
-                )
             return 0
 
         new_courses: List[Course] = []
@@ -171,6 +172,6 @@ def monitor_loop(bot: TeleBot) -> None:
 
         for chat_id in chat_ids:
             try:
-                check_for_new_courses(bot, chat_id, notify=True, bootstrap_message=False)
+                check_for_new_courses(bot, chat_id, notify=True, showMessage=False)
             except Exception:
                 logging.exception("Error monitoreando chat %s", chat_id)
