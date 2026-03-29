@@ -1,13 +1,130 @@
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from core import (
-    FILTER_LABELS,
-    FILTER_MENU_ORDER,
-    FILTER_QUICK_OPTIONS,
+    DEFAULT_FILTERS,
     formatCourseFilters,
     get_or_create_chat,
     update_chat_filter,
 )
+
+FILTER_LABELS = {
+    "uni_countries": "País",
+    "disciplinary_field": "Área disciplinaria",
+    "course_university": "Universidad",
+    "uni_languages": "Idioma",
+    "course_levels": "Nivel académico",
+    "uni_search": "Palabra clave",
+}
+
+FILTER_MENU_ORDER = list(DEFAULT_FILTERS.keys())
+
+FILTER_QUICK_OPTIONS = {
+    "uni_countries": [
+        ("Argentina", "16"),
+        ("Bolivia", "17"),
+        ("Brasil", "43"),
+        ("Brazil", "197"),
+        ("Canada", "6"),
+        ("Chile", "18"),
+        ("Colombia", "19"),
+        ("Ecuador", "20"),
+        ("El Salvador", "201"),
+        ("Mexico", "21"),
+        ("Nicaragua", "199"),
+        ("Panamá", "44"),
+        ("Paraguay", "194"),
+        ("Peru", "22"),
+        ("República Dominicana", "45"),
+        ("Venezuela", "23"),
+    ],
+    "course_university": [
+
+    ],
+    "uni_languages": [
+
+    ],
+    "course_levels": [
+        ("Doctorado/Doctorate", "119"),
+        ("Formación continua/ Continuous training", "124"),
+        ("Posgrado/Postgraduate", "79"),
+        ("Pregrado/Undergraduate", "86"),
+        ("Técnico-Tecnológico Superior/ Technical-Technological", "112"),
+    ],
+    "disciplinary_field": [
+        ("Administración de empresas", "220"),
+        ("Agronomía y estudios de la tierra", "262"),
+        ("Arquitectura y diseño", "322"),
+        ("Artes", "292"),
+        ("Artes gráficas y escénicas", "294"),
+        ("Artes plásticas", "296"),
+        ("Biología", "326"),
+        ("Ciencias administrativas", "218"),
+        ("Ciencias Biológicas", "260"),
+        ("Ciencias de la comunicación", "284"),
+        ("Ciencias de la salud", "238"),
+        ("Ciencias económico-administrativas", "208"),
+        ("Ciencias exactas y naturales", "324"),
+        ("Ciencias politicas", "304"),
+        ("Ciencias sociales y Humanidades", "302"),
+        ("Comunicación", "288"),
+        ("Contabilidad", "222"),
+        ("Deportes", "342"),
+        ("Derecho", "306"),
+        ("Economía", "210"),
+        ("Educación", "344"),
+        ("Educación y pedagogía", "340"),
+        ("Enfermería", "240"),
+        ("Farmacia", "242"),
+        ("Filosofía y ética", "308"),
+        ("Finanzas", "224"),
+        ("Física", "328"),
+        ("Geografía", "330"),
+        ("Geología", "332"),
+        ("Gestión empresarial", "226"),
+        ("Historia", "310"),
+        ("Hotelería y turismo", "228"),
+        ("Idiomas", "346"),
+        ("Ingeniería Civil", "270"),
+        ("Ingeniería de Sistemas", "280"),
+        ("Ingeniería Eléctrica", "272"),
+        ("Ingeniería Electrónica", "274"),
+        ("Ingeniería Industrial", "276"),
+        ("Ingeniería Mecánica", "278"),
+        ("Ingenierías", "268"),
+        ("Literatura", "312"),
+        ("Macroeconomía", "212"),
+        ("Matemáticas", "334"),
+        ("Medicina", "244"),
+        ("Mercadotecnia y publicidad", "230"),
+        ("Música", "298"),
+        ("Negocios Internacionales", "232"),
+        ("Nutrición", "246"),
+        ("Odontología", "248"),
+        ("Otra Arte", "300"),
+        ("Otra Ciencia administrativa", "236"),
+        ("Otra Ciencia Biológica", "266"),
+        ("Otra Ciencia de la comunicación", "290"),
+        ("Otra Ciencia de la salud", "258"),
+        ("Otra Ciencia económico-administrativa", "216"),
+        ("Otra Ciencia exacta o natural", "338"),
+        ("Otra Ciencia social o humanidad", "320"),
+        ("Otra Educación y pedagogía", "350"),
+        ("Otra Ingeniería", "282"),
+        ("Pedagogía", "348"),
+        ("Periodismo", "286"),
+        ("Psicología", "250"),
+        ("Química", "336"),
+        ("Religión y teología", "314"),
+        ("Salud infantil", "254"),
+        ("Salud y protección laboral", "252"),
+        ("Servicios", "234"),
+        ("Sociología", "316"),
+        ("Terapia y rehabilitación", "256"),
+        ("Trabajo Social", "318"),
+        ("Veterinaria y zootecnia", "264"),
+    ],
+
+}
 
 
 def _build_menu_keyboard() -> InlineKeyboardMarkup:
@@ -32,7 +149,7 @@ def _build_value_keyboard(filter_key: str) -> InlineKeyboardMarkup:
         keyboard.add(InlineKeyboardButton(label, callback_data=f"menu:set:{filter_key}:{value}"))
 
     keyboard.add(
-        InlineKeyboardButton("Sin valor", callback_data=f"menu:set:{filter_key}:"),
+        InlineKeyboardButton("Cualquiera", callback_data=f"menu:set:{filter_key}:"),
         InlineKeyboardButton("Escribir valor", callback_data=f"menu:custom:{filter_key}"),
     )
     keyboard.add(InlineKeyboardButton("Volver", callback_data="menu:back"))
@@ -42,7 +159,7 @@ def _build_value_keyboard(filter_key: str) -> InlineKeyboardMarkup:
 def register(bot):
     def _render_menu(chat_id: int) -> str:
         chat_state = get_or_create_chat(chat_id)
-        return "<b>Menú de filtros</b>\n\n" + formatCourseFilters(chat_state["filters"])
+        return "<b>Filtros Configurados</b>\n\n" + formatCourseFilters(chat_state["filters"])
 
     def _ask_for_custom_value(message, filter_key: str) -> None:
         filter_label = FILTER_LABELS.get(filter_key, filter_key)

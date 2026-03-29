@@ -20,35 +20,11 @@ DEFAULT_FILTERS: CourseFilters = {
     "course_university": None,
     "uni_languages": None,
     "course_levels": None,
-    "course_drafts": None,
     "uni_search": None,
 }
 
 ALLOWED_FILTER_KEYS = set(DEFAULT_FILTERS.keys())
 LOCK = threading.RLock()
-
-FILTER_LABELS = {
-    "uni_countries": "País",
-    "disciplinary_field": "Área disciplinaria",
-    "course_university": "Universidad",
-    "uni_languages": "Idioma",
-    "course_levels": "Nivel académico",
-    "course_drafts": "Borrador del curso",
-    "uni_search": "Palabra clave",
-}
-
-FILTER_MENU_ORDER = list(DEFAULT_FILTERS.keys())
-
-FILTER_QUICK_OPTIONS = {
-    "uni_languages": [
-        ("Español", "espanol"),
-        ("Inglés", "ingles"),
-    ],
-    "course_levels": [
-        ("Pregrado", "pregrado"),
-        ("Posgrado", "posgrado"),
-    ],
-}
 
 class ConfigChat(TypedDict, total=False):
     filters: CourseFilters
@@ -137,7 +113,6 @@ def formatCourseFilters(filters: CourseFilters) -> str:
         f"• <b>Universidad:</b> {formatCourseFilter('course_university')}\n"
         f"• <b>Idioma:</b> {formatCourseFilter('uni_languages')}\n"
         f"• <b>Nivel académico:</b> {formatCourseFilter('course_levels')}\n"
-        f"• <b>Borrador del curso:</b> {formatCourseFilter('course_drafts')}\n"
         f"• <b>Palabra clave:</b> {formatCourseFilter('uni_search')}"
     )
 

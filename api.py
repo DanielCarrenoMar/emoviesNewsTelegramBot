@@ -10,7 +10,6 @@ class CourseFilters(TypedDict, total=False):
     course_university: Optional[str]
     uni_languages: Optional[str]
     course_levels: Optional[str]
-    course_drafts: Optional[str]
     uni_search: Optional[str]
 
 class Course(TypedDict, total=False):
