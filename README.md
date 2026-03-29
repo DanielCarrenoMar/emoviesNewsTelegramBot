@@ -11,7 +11,7 @@ Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando
 ## Variables de entorno
 
 - `TELEGRAM_BOT_TOKEN` (obligatoria)
-- `POLL_INTERVAL_SECONDS` (opcional, por defecto `300`)
+- `POLL_INTERVAL_SECONDS` (opcional, por defecto `2700`)
 
 ## Ejecutar localmente
 
@@ -25,22 +25,19 @@ Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando
 3. Ejecutar:
 
    ```bash
-   python bot.py
+   python main.py
    ```
 
 ## Comandos del bot
 
 - `/start` inicia el bot en el chat.
 - `/help` muestra ayuda.
-- `/menu` abre el menú interactivo para configurar filtros.
-- `/filters` muestra los filtros activos.
-- `/setfilter clave valor` cambia un filtro (ejemplo: `/setfilter disciplinary_field 280`).
-- `/setfilter clave=valor` formato alternativo.
+- `/filters` permite ver y modificar los filtros activos.
 - `/resetfilters` vuelve a filtros por defecto.
-- `/loadurl URL` carga filtros desde una URL de la API.
 - `/check` consulta inmediatamente y notifica cursos nuevos.
 - `/on` activa monitoreo automático del chat.
 - `/off` pausa monitoreo automático del chat.
+- `/courseList` devuelve cursos segun los filtros configurados
 
 ## Filtros soportados
 
@@ -49,18 +46,3 @@ Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando
 - `course_university`
 - `uni_languages`
 - `course_levels`
-- `course_drafts`
-- `uni_search`
-- `page`
-
-## Deploy en Render
-
-Este repositorio incluye `render.yaml` para desplegar como **Worker**.
-
-1. Subir el proyecto a GitHub.
-2. En Render: **New +** → **Blueprint**.
-3. Seleccionar tu repositorio.
-4. Configurar `TELEGRAM_BOT_TOKEN` en variables de entorno.
-5. Deploy.
-
-> Nota: el estado (`bot_state.json`) se guarda en disco local del contenedor. Si Render reinicia la instancia, ese estado puede perderse.
