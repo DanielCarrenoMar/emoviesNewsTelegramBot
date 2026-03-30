@@ -1,19 +1,22 @@
-from core import LOCK, STATE, get_or_create_chat, save_state
+from core import getOrCreateChatConfig
+from data.database import updateChatConfig
 
 
 def register(bot):
     @bot.message_handler(commands=["on"])
     def handle_on(message):
-        chat_state = get_or_create_chat(message.chat.id)
-        with LOCK:
-            chat_state["isSubcribed"] = True
-            save_state(STATE)
+        chatId = message.chat.id
+        chatConfig = getOrCreateChatConfig(message.chat.id)
+
+        chatConfig["isSubcribed"] = True
+        updateChatConfig(chatId, chatConfig)
         bot.reply_to(message, "✅ Monitoreo automático activado.")
 
     @bot.message_handler(commands=["off"])
     def handle_off(message):
-        chat_state = get_or_create_chat(message.chat.id)
-        with LOCK:
-            chat_state["isSubcribed"] = False
-            save_state(STATE)
+        chatId = message.chat.id
+        chatConfig = getOrCreateChatConfig(message.chat.id)
+
+        chatConfig["isSubcribed"] = False
+        updateChatConfig(chatId, chatConfig)
         bot.reply_to(message, "⏸️ Monitoreo automático pausado.")

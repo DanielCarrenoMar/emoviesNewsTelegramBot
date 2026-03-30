@@ -3,7 +3,7 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 from core import (
     DEFAULT_FILTERS,
     formatCourseFilters,
-    get_or_create_chat,
+    getOrCreateChatConfig,
     update_chat_filter,
 )
 
@@ -158,7 +158,7 @@ def _build_value_keyboard(filter_key: str) -> InlineKeyboardMarkup:
 
 def register(bot):
     def _render_menu(chat_id: int) -> str:
-        chat_state = get_or_create_chat(chat_id)
+        chat_state = getOrCreateChatConfig(chat_id)
         return "<b>Filtros Configurados</b>\n\n" + formatCourseFilters(chat_state["filters"])
 
     def _ask_for_custom_value(message, filter_key: str) -> None:
