@@ -1,6 +1,32 @@
-# emoviesNewsTelegramBot
+<a>
+    <img src="https://github.com/DanielCarrenoMar/Snake-XPR_UCAB/assets/144462396/d30c8055-4d82-4a05-b0f3-5f74c85ffb7f" alt="Logo" title="Logo" align="right" height="70" />
+</a>
 
-Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando aparece uno nuevo según filtros configurables por chat.
+# 	![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff) EMovies News. Bot Telegram
+
+[![status: active](https://github.com/GIScience/badges/raw/master/status/active.svg)](https://github.com/GIScience/badges#active)
+![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)
+
+Bot de Telegram para monitorear cursos disponibles en [eMOVIES](https://emovies.oui-iohe.org/en/page-our-courses/) y notificar cuando aparece uno nuevo según filtros configurables por chat.
+
+> 👀 [Prueba el bot](https://t.me/emovies_news_bot)
+
+## Características ⭐
+- Guardado de configuración de filtro para cada usuario.
+- Notificación cada 24 horas de nuevos cursos según los filtros del usuario.
+
+## Comandos del bot
+
+- `/start` inicia el bot en el chat.
+- `/help` muestra ayuda.
+- `/filters` permite ver y modificar los filtros activos.
+- `/resetfilters` vuelve a filtros por defecto.
+- `/check` consulta inmediatamente y notifica cursos nuevos.
+- `/on` activa monitoreo automático del chat.
+- `/off` pausa monitoreo automático del chat.
+- `/courseList` devuelve cursos segun los filtros configurados
+
+# Para desarrolladores
 
 ## Requisitos
 
@@ -28,22 +54,3 @@ Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando
    ```bash
    python main.py
    ```
-
-## Comandos del bot
-
-- `/start` inicia el bot en el chat.
-- `/help` muestra ayuda.
-- `/filters` permite ver y modificar los filtros activos.
-- `/resetfilters` vuelve a filtros por defecto.
-- `/check` consulta inmediatamente y notifica cursos nuevos.
-- `/on` activa monitoreo automático del chat.
-- `/off` pausa monitoreo automático del chat.
-- `/courseList` devuelve cursos segun los filtros configurados
-
-## Filtros soportados
-
-- `uni_countries`
-- `disciplinary_field`
-- `course_university`
-- `uni_languages`
-- `course_levels`
