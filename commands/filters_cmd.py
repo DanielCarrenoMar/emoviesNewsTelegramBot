@@ -5,7 +5,7 @@ from core import (
     getOrCreateChatConfig,
     update_chat_filter,
 )
-from utilsChat import formatCourseFilters
+from utilsChat import formatCourseFiltersMessage
 
 FILTER_LABELS = {
     "uni_countries": "País",
@@ -159,7 +159,7 @@ def _build_value_keyboard(filter_key: str) -> InlineKeyboardMarkup:
 def register(bot):
     def _render_menu(chat_id: int) -> str:
         chat_state = getOrCreateChatConfig(chat_id)
-        return "<b>Filtros Configurados</b>\n\n" + formatCourseFilters(chat_state["filters"])
+        return "<b>Filtros Configurados</b>\n\n" + formatCourseFiltersMessage(chat_state["filters"])
 
     def _ask_for_custom_value(message, filter_key: str) -> None:
         filter_label = FILTER_LABELS.get(filter_key, filter_key)

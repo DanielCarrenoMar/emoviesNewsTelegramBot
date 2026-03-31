@@ -1,17 +1,17 @@
 from data.types import Course, CourseFilters
 
-def format_course_message(course: Course) -> str:
+def formatCourseMessage(course: Course) -> str:
     title = course.get("post_title") or "Sin título"
-    link = course.get("guid") or "Sin enlace"
+    link = f"https://emovies.oui-iohe.org/nuestros-cursos/{course.get('post_name')}" or course.get("guid")
     modified = course.get("post_modified") or "Sin fecha"
 
     return (
         f"<b>{title}</b>\n"
         f"• <b>Actualizado:</b> {modified}\n"
-        f"• <b>Enlace:</b> {link}"
+        f"• <b>Enlace:</b>  {link}"
     )
 
-def formatCourseFilters(filters: CourseFilters) -> str:
+def formatCourseFiltersMessage(filters: CourseFilters) -> str:
     def formatCourseFilter(key: str) -> str:
         value = filters.get(key)
         return value if value is not None and value != "" else "Sin Valor"

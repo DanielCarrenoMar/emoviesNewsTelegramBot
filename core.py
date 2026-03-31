@@ -7,7 +7,7 @@ from telebot import TeleBot
 from data.api import Course, CourseFilters, fetch_courses
 from data.database import getAllChatConfigs, getOrCreateChatConfig, updateChatConfig
 from data.types import ChatConfig
-from utilsChat import format_course_message
+from utilsChat import formatCourseMessage
 
 POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "2700"))
 
@@ -63,7 +63,7 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
 
     if notify:
         for course in new_courses:
-            bot.send_message(chat_id, format_course_message(course), disable_web_page_preview=True)
+            bot.send_message(chat_id, formatCourseMessage(course), disable_web_page_preview=True)
 
     if newest_revision:
         chatConfig["lastRevision"] = newest_revision
