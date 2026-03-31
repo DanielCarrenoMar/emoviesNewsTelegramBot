@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 from typing import Any, Dict, List, Optional, TypedDict
 
@@ -10,6 +12,17 @@ API_URL = "https://emovies.oui-iohe.org/wp-admin/admin-ajax.php"
 class CoursesPayload(TypedDict, total=False):
     max_num_pages: int
     posts: List[Course]
+
+
+def _course_date(course: Course) -> datetime:
+    raw_date = course.get("post_modified")
+    if not raw_date:
+        return datetime.min
+
+    try:
+        return datetime.fromisoformat(raw_date)
+    except ValueError:
+        return datetime.min
 
 def filtersNoneToNaN(filters: CourseFilters) -> CourseFilters:
     return {k: (v if v is not None else "NaN") for k, v in filters.items()}
@@ -52,4 +65,4 @@ def fetch_courses(filters: CourseFilters) -> List[Course]:
             if isinstance(course, dict) and course.get("ID") is not None:
                 courses_by_id[int(course["ID"])] = course
 
-    return sorted(courses_by_id.values(), key=lambda x: x.get("post_date", ""), reverse=True)
+    return sorted(courses_by_id.values(), key=_course_date, reverse=True)
