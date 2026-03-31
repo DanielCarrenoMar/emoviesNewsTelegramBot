@@ -2,10 +2,10 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from core import (
     DEFAULT_FILTERS,
-    formatCourseFilters,
     getOrCreateChatConfig,
     update_chat_filter,
 )
+from utilsChat import formatCourseFilters
 
 FILTER_LABELS = {
     "uni_countries": "País",

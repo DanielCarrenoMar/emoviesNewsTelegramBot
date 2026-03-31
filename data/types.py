@@ -38,5 +38,5 @@ class Course(TypedDict, total=False):
 
 class ChatConfig(TypedDict, total=False):
     filters: CourseFilters
-    last_revision: Optional[str]
+    lastRevision: str
     isSubcribed: bool

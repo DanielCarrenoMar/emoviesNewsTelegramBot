@@ -2,7 +2,8 @@
 
 from telebot import TeleBot
 
-from core import format_course_message, formatCourseFilters, getCoursesWithUserFilters
+from core import format_course_message, getCoursesWithUserFilters
+from utilsChat import formatCourseFilters
 
 
 def courseList(bot: TeleBot):

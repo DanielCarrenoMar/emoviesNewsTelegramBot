@@ -9,9 +9,6 @@ from data.database import getAllChatConfigs, getOrCreateChatConfig, updateChatCo
 from data.types import ChatConfig
 from utilsChat import format_course_message
 
-
-DATA_FILE = "bot_state.json"
-
 POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "2700"))
 
 DEFAULT_FILTERS: CourseFilters = {
@@ -40,31 +37,26 @@ def update_chat_filter(chat_id: int, filter_key: str, filter_value: Optional[str
 
 def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: bool = False) -> int:
     chatConfig = getOrCreateChatConfig(chat_id)
-    last_revision = chatConfig["last_revision"]
+    print(f"ChatConfig for chat_id {chat_id}: {chatConfig}")
+    lastRevision = chatConfig["lastRevision"]
     filters = chatConfig["filters"].copy()
 
     if showMessage:
         bot.send_message(
             chat_id,
-            f"Revisando novedades... Posteriores a {last_revision or 'sin fecha'}",
+            f"Revisando novedades... Posteriores a {lastRevision or 'sin fecha'}",
         )
 
     courses = fetch_courses(filters)
 
     newest_revision = courses[0].get("post_date") if courses else None
 
-    if not last_revision:
-        chatConfig["last_revision"] = newest_revision
-        updateChatConfig(chat_id, chatConfig)
-
-        return 0
-
     new_courses: List[Course] = []
     for course in courses:
         course_date = course.get("post_date")
         if not course_date:
             continue
-        if course_date > last_revision:
+        if course_date > lastRevision:
             new_courses.append(course)
         else:
             break
@@ -74,7 +66,7 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
             bot.send_message(chat_id, format_course_message(course), disable_web_page_preview=True)
 
     if newest_revision:
-        chatConfig["last_revision"] = newest_revision
+        chatConfig["lastRevision"] = newest_revision
     updateChatConfig(chat_id, chatConfig)
     return len(new_courses)
 

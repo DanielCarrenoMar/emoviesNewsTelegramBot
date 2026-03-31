@@ -12,6 +12,7 @@ Bot de Telegram para monitorear cursos disponibles en eMOVIES y notificar cuando
 
 - `TELEGRAM_BOT_TOKEN` (obligatoria)
 - `POLL_INTERVAL_SECONDS` (opcional, por defecto `2700`)
+- `DB_URL` (obligatoria para persistencia)
 
 ## Ejecutar localmente
 
