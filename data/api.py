@@ -11,6 +11,7 @@ API_URL = "https://emovies.oui-iohe.org/wp-admin/admin-ajax.php"
 
 class CoursesPayload(TypedDict, total=False):
     max_num_pages: int
+    post_count: int
     posts: List[Course]
 
 
@@ -43,6 +44,7 @@ def fetch_courses(filters: CourseFilters) -> List[Course]:
         
         if not isinstance(courses_payload, dict):
             raise ValueError("La API devolvió un formato inesperado para courses")
+        print(f"Fetched page {page} with {courses_payload.get('post_count', 0)} courses")
         return courses_payload
     
     first_payload = _fetch_page(1)
