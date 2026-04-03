@@ -48,7 +48,7 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
 
     courses = fetch_courses(filters)
 
-    newest_revision = courses[0].get("post_date") if courses else None
+    newest_revision = courses[0].get("post_modified") if courses else None
 
     new_courses: List[Course] = []
     for course in courses:
