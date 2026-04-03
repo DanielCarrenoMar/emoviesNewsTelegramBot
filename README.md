@@ -24,7 +24,6 @@ Bot de Telegram para monitorear cursos disponibles en [eMOVIES](https://emovies.
 - `/check` consulta inmediatamente y notifica cursos nuevos.
 - `/on` activa monitoreo automático del chat.
 - `/off` pausa monitoreo automático del chat.
-- `/courseList` devuelve cursos segun los filtros configurados
 
 # Para desarrolladores
 
