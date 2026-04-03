@@ -7,6 +7,7 @@ def register(bot):
     @bot.message_handler(commands=["check"])
     def handle_check(message):
         chat_id = message.chat.id
+        print(f"/check ejecutado para chat_id {chat_id}")
         try:
             count = check_for_new_courses(bot, chat_id, notify=True, showMessage=True)
             if count == 0:

@@ -82,8 +82,6 @@ def _fecthChatConfig(chatId: int, cursor: psycopg.cursor) -> Optional[ChatConfig
     return row
 
 def getOrCreateChatConfig(chatId: int) -> ChatConfig:
-    print("getOrCreateChatConfig")
-
     with databaseConnection.cursor(row_factory=dict_row) as cursor:
         row = _fecthChatConfig(chatId, cursor)
 

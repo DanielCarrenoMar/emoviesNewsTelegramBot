@@ -37,7 +37,6 @@ def update_chat_filter(chat_id: int, filter_key: str, filter_value: Optional[str
 
 def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: bool = False) -> int:
     chatConfig = getOrCreateChatConfig(chat_id)
-    print(f"ChatConfig for chat_id {chat_id}: {chatConfig}")
     lastRevision = chatConfig["lastRevision"]
     filters = chatConfig["filters"].copy()
 
@@ -71,7 +70,6 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
     return len(new_courses)
 
 def monitor_loop(bot: TeleBot) -> None:
-    print("Iniciando monitor de cursos...")
     while True:
         time.sleep(POLL_INTERVAL_SECONDS)
 
@@ -88,6 +86,7 @@ def monitor_loop(bot: TeleBot) -> None:
 
         for chat_id in chat_ids:
             try:
+                print(f"Ejecutando check para chat suscrito {chat_id}")
                 check_for_new_courses(bot, chat_id, notify=True, showMessage=False)
             except Exception:
                 logging.exception("Error monitoreando chat %s", chat_id)

@@ -26,5 +26,4 @@ if __name__ == "__main__":
     monitor_thread = threading.Thread(target=monitor_loop, args=(bot,), daemon=True)
     monitor_thread.start()
 
-    print("Bot iniciado. Esperando mensajes...")
     bot.infinity_polling(skip_pending=True, timeout=60, long_polling_timeout=30)
