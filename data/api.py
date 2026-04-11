@@ -16,14 +16,17 @@ class CoursesPayload(TypedDict, total=False):
 
 
 def _course_date(course: Course) -> datetime:
-    raw_date = course.get("post_modified")
-    if not raw_date:
-        return datetime.min
-
-    try:
-        return datetime.fromisoformat(raw_date)
-    except ValueError:
-        return datetime.min
+    dates = []
+    
+    for key in ("post_modified", "post_date"):
+        raw_date = course.get(key)
+        if raw_date:
+            try:
+                dates.append(datetime.fromisoformat(raw_date))
+            except ValueError:
+                pass
+                
+    return max(dates) if dates else datetime.min
 
 def filtersNoneToNaN(filters: CourseFilters) -> CourseFilters:
     return {k: (v if v is not None else "NaN") for k, v in filters.items()}
