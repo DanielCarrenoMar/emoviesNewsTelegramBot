@@ -1,9 +1,24 @@
+from datetime import datetime
+
 from data.types import Course, CourseFilters
+
+def _courseDateStr(course: Course) -> str:
+    dates: list[datetime] = []
+    
+    for key in ("post_modified", "post_date"):
+        raw_date = course.get(key)
+        if raw_date:
+            try:
+                dates.append(datetime.fromisoformat(raw_date))
+            except ValueError:
+                pass
+                
+    return max(dates).strftime("%Y-%m-%d %H:%M:%S") if dates else datetime.min.strftime("%Y-%m-%d %H:%M:%S")
 
 def formatCourseMessage(course: Course) -> str:
     title = course.get("post_title") or "Sin título"
     link = f"https://emovies.oui-iohe.org/nuestros-cursos/{course.get('post_name')}" or course.get("guid")
-    modified = course.get("post_modified") or "Sin fecha"
+    modified = _courseDateStr(course)
 
     return (
         f"<b>{title}</b>\n"
