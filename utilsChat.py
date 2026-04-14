@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from data.types import Course, CourseFilters
+from data.types import CourseAPI, CourseFilters
 
-def _courseDateStr(course: Course) -> str:
+def _courseDateStr(course: CourseAPI) -> str:
     dates: list[datetime] = []
     
     for key in ("post_modified", "post_date"):
@@ -15,7 +15,7 @@ def _courseDateStr(course: Course) -> str:
                 
     return max(dates).strftime("%Y-%m-%d %H:%M:%S") if dates else datetime.min.strftime("%Y-%m-%d %H:%M:%S")
 
-def formatCourseMessage(course: Course) -> str:
+def formatCourseMessage(course: CourseAPI) -> str:
     title = course.get("post_title") or "Sin título"
     link = f"https://emovies.oui-iohe.org/nuestros-cursos/{course.get('post_name')}" or course.get("guid")
     modified = _courseDateStr(course)

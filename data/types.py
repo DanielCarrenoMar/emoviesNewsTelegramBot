@@ -9,7 +9,7 @@ class CourseFilters(TypedDict, total=False):
     course_levels: Optional[str]
     uni_search: Optional[str]
 
-class Course(TypedDict, total=False):
+class CourseAPI(TypedDict, total=False):
     ID: int
     post_author: str
     post_date: str

@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from typing import Any, Dict, List, Optional, TypedDict
 
-from data.types import Course, CourseFilters
+from data.types import CourseAPI, CourseFilters
 
 REQUEST_TIMEOUT_SECONDS = 30
 API_URL = "https://emovies.oui-iohe.org/wp-admin/admin-ajax.php"
@@ -12,10 +12,10 @@ API_URL = "https://emovies.oui-iohe.org/wp-admin/admin-ajax.php"
 class CoursesPayload(TypedDict, total=False):
     max_num_pages: int
     post_count: int
-    posts: List[Course]
+    posts: List[CourseAPI]
 
 
-def _course_date(course: Course) -> datetime:
+def _course_date(course: CourseAPI) -> datetime:
     dates = []
     
     for key in ("post_modified", "post_date"):
@@ -31,7 +31,7 @@ def _course_date(course: Course) -> datetime:
 def filtersNoneToNaN(filters: CourseFilters) -> CourseFilters:
     return {k: (v if v is not None else "NaN") for k, v in filters.items()}
 
-def fetch_courses(filters: CourseFilters) -> List[Course]:
+def fetch_courses(filters: CourseFilters) -> List[CourseAPI]:
     def _fetch_page(page: int) -> CoursesPayload:
         validFilters = filtersNoneToNaN(filters)
         validFilters["uni_search"] = "" if filters.get("uni_search") is None else filters["uni_search"]
@@ -53,7 +53,7 @@ def fetch_courses(filters: CourseFilters) -> List[Course]:
     first_payload = _fetch_page(1)
 
     max_num_pages = first_payload.get("max_num_pages", 1)
-    courses_by_id: Dict[int, Course] = {}
+    courses_by_id: Dict[int, CourseAPI] = {}
 
     for course in first_payload.get("posts", []):
         if isinstance(course, dict) and course.get("ID") is not None:

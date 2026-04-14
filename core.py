@@ -4,7 +4,7 @@ import time
 from typing import List, Optional
 
 from telebot import TeleBot
-from data.api import Course, CourseFilters, fetch_courses
+from data.api import CourseAPI, CourseFilters, fetch_courses
 from data.database import getAllChatConfigs, getOrCreateChatConfig, updateChatConfig
 from data.types import ChatConfig
 from utilsChat import formatCourseMessage
@@ -22,7 +22,7 @@ DEFAULT_FILTERS: CourseFilters = {
 
 ALLOWED_FILTER_KEYS = set(DEFAULT_FILTERS.keys())
 
-def getCoursesWithUserFilters(chat_id: int) -> tuple[CourseFilters, List[Course]]:
+def getCoursesWithUserFilters(chat_id: int) -> tuple[CourseFilters, List[CourseAPI]]:
     chatConfig = getOrCreateChatConfig(chat_id)
     filters = chatConfig["filters"].copy()
     return filters, fetch_courses(filters)
@@ -50,7 +50,7 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
 
     newest_revision = courses[0].get("post_modified") if courses else None
 
-    new_courses: List[Course] = []
+    new_courses: List[CourseAPI] = []
     for course in courses:
         course_date = course.get("post_date")
         if not course_date:
