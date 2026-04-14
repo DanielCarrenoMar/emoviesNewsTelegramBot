@@ -2,11 +2,11 @@ import logging
 import os
 import time
 from typing import List, Optional
-
+from datetime import datetime
 from telebot import TeleBot
-from data.api import CourseAPI, CourseFilters, fetch_courses
+from data.api import CourseFilters, fetch_courses
 from data.database import getAllChatConfigs, getOrCreateChatConfig, updateChatConfig
-from data.types import ChatConfig
+from data.types import ChatConfig, Course
 from utilsChat import formatCourseMessage
 
 POLL_INTERVAL_SECONDS = int(os.getenv("POLL_INTERVAL_SECONDS", "2700"))
@@ -22,11 +22,6 @@ DEFAULT_FILTERS: CourseFilters = {
 
 ALLOWED_FILTER_KEYS = set(DEFAULT_FILTERS.keys())
 
-def getCoursesWithUserFilters(chat_id: int) -> tuple[CourseFilters, List[CourseAPI]]:
-    chatConfig = getOrCreateChatConfig(chat_id)
-    filters = chatConfig["filters"].copy()
-    return filters, fetch_courses(filters)
-
 def update_chat_filter(chat_id: int, filter_key: str, filter_value: Optional[str]) -> ChatConfig:
     if filter_key not in ALLOWED_FILTER_KEYS:
         raise KeyError(filter_key)
@@ -38,6 +33,7 @@ def update_chat_filter(chat_id: int, filter_key: str, filter_value: Optional[str
 def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: bool = False) -> int:
     chatConfig = getOrCreateChatConfig(chat_id)
     lastRevision = chatConfig["lastRevision"]
+    lastRevisionDate = datetime.fromisoformat(lastRevision).date()
     filters = chatConfig["filters"].copy()
 
     if showMessage:
@@ -48,14 +44,14 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
 
     courses = fetch_courses(filters)
 
-    newest_revision = courses[0].get("post_modified") if courses else None
+    newest_revision = courses[0].date if courses else None
 
-    new_courses: List[CourseAPI] = []
+    new_courses: List[Course] = []
     for course in courses:
-        course_date = course.get("post_date")
+        course_date = course.date
         if not course_date:
             continue
-        if course_date > lastRevision:
+        if course_date > lastRevisionDate:
             new_courses.append(course)
         else:
             break
@@ -65,7 +61,7 @@ def check_for_new_courses(bot, chat_id: int, notify: bool = True, showMessage: b
             bot.send_message(chat_id, formatCourseMessage(course), disable_web_page_preview=True)
 
     if newest_revision:
-        chatConfig["lastRevision"] = newest_revision
+        chatConfig["lastRevision"] = newest_revision.isoformat()
     updateChatConfig(chat_id, chatConfig)
     return len(new_courses)
 

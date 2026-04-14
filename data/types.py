@@ -1,5 +1,6 @@
+from dataclasses import dataclass
+from datetime import date, datetime
 from typing import Optional, TypedDict
-
 
 class CourseFilters(TypedDict, total=False):
     uni_countries: Optional[str]
@@ -34,6 +35,50 @@ class CourseAPI(TypedDict, total=False):
     post_mime_type: str
     comment_count: str
     filter: str
+
+@dataclass(slots=True)
+class Course:
+    id: int
+    title: str
+    link: str
+    date: date
+
+def _parse_api_datetime(value: Optional[str]) -> Optional[date]:
+    if not value:
+        return None
+
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
+    except ValueError:
+        return None
+
+def courseFromAPI(course_api: CourseAPI) -> Optional[Course]:
+    try:
+        courseDate = _parse_api_datetime(course_api.get("post_date"))
+        courseModifiedDate = _parse_api_datetime(course_api.get("post_modified"))
+
+        if courseDate is None and courseModifiedDate is None:
+            raise ValueError("No hay fechas válidas en el curso")
+
+        courseSlug = course_api.get("post_name", "")
+        courseLink = f"https://emovies.oui-iohe.org/nuestros-cursos/{courseSlug}"
+
+        if not courseSlug:
+            courseLink = course_api.get("guid", "")
+
+        return Course(
+            id=course_api["ID"],
+            title=course_api.get("post_title", "Sin título"),
+            link=courseLink,
+            date=max(
+                parsed_date
+                for parsed_date in (courseDate, courseModifiedDate)
+                if parsed_date is not None
+            ),
+        )
+    except (KeyError, ValueError) as e:
+        print(f"Error al convertir curso API a curso: {course_api}")
+        raise e
 
 
 class ChatConfig(TypedDict, total=False):
