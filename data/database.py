@@ -15,7 +15,8 @@ if not os.getenv("DB_URL"):
     raise RuntimeError("Falta variable de entorno DB_URL")
 
 databaseConnection = psycopg.connect(
-    os.getenv("DB_URL")
+    os.getenv("DB_URL"),
+    autocommit=True,
 )
 
 class ChatConfigRow(TypedDict, total=False):
